@@ -1,0 +1,56 @@
+<main>
+    <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data">
+        <div class="form-section">
+            <div class="form-group">
+                <label for="previous_papers">Previous Year Papers (PDF/DOC/TXT) <span class="required">*</span></label>
+                <input type="file" id="previous_papers" name="previous_papers" multiple required accept=".pdf,.doc,.docx,.txt">
+                <small>You can select multiple files</small>
+            </div>
+
+            <div class="form-group">
+                <label for="syllabus">Syllabus (PDF/DOC/TXT) <span class="required">*</span></label>
+                <input type="file" id="syllabus" name="syllabus" required accept=".pdf,.doc,.docx,.txt">
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Notes (Optional)</label>
+                <input type="file" id="notes" name="notes" accept=".pdf,.doc,.docx,.txt">
+            </div>
+
+            <div class="form-group">
+                <label for="course_outcomes">Course Outcomes (COs) <span class="required">*</span></label>
+                <textarea id="course_outcomes" name="course_outcomes" rows="5" required placeholder="Enter course outcomes (e.g., CO1: Understand core principles, CO2: Apply concepts to real-world problems...)"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="total_marks">Total Marks <span class="required">*</span></label>
+                <input type="number" id="total_marks" name="total_marks" min="1" max="1000" required placeholder="e.g., 100">
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Generate Question Paper</button>
+    </form>
+</main>
+
+<footer>
+    <p>Powered by Gemini API</p>
+</footer>
+</div>
+
+<script>
+// Add animation to flash messages
+document.addEventListener('DOMContentLoaded', function() {
+    const flashMessages = document.querySelectorAll('.flash-message');
+    flashMessages.forEach(message => {
+        // Add fade-out effect after 5 seconds
+        setTimeout(() => {
+            message.style.opacity = '0';
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 1000);
+        }, 5000);
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicted Question Paper</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Add Markdown processing library -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .section-content {
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+    <div class="container result-container">
+        <header>
+            <h1>Predicted Question Paper</h1>
+            <div class="result-meta">
+                <p><strong>Course Outcomes:</strong> {{ course_outcomes }}</p>
+                <p><strong>Total Marks:</strong> {{ total_marks }}</p>
+            </div>
+            <div class="download-options">
+                <a href="{{ url_for('download', format='txt') }}?full_response={{ full_response|urlencode }}" class="download-btn">Download as TXT</a>
+                <a href="{{ url_for('download', format='docx') }}?full_response={{ full_response|urlencode }}" class="download-btn">Download as DOCX</a>
+                <a href="{{ url_for('index') }}" class="back-btn">New Prediction</a>
+            </div>
+        </header>
+
+        <main class="result-main">
+            <div class="result-tabs">
+                <button class="tab-btn active" data-tab="repeated">Repeated Questions</button>
+                <button class="tab-btn" data-tab="probable">Probable Questions</button>
+                <button class="tab-btn" data-tab="generated">Generated Paper</button>
+            </div>
+
+            <div class="tab-content active" id="repeated-tab">
+                <h2>Section 1: Previously Asked Repeated Questions</h2>
+                <div class="section-content markdown-content" id="repeated-content">
+                    {{ sections.repeated_questions }}
+                </div>
+            </div>
+
+            <div class="tab-content" id="probable-tab">
+                <h2>Section 2: Most Probable Questions</h2>
+                <div class="section-content markdown-content" id="probable-content">
+                    {{ sections.probable_questions }}
+                </div>
+            </div>
+
+            <div class="tab-content" id="generated-tab">
+                <h2>Section 3: Generated Question Paper</h2>
+                <div class="section-content markdown-content" id="generated-content">
+                    {{ sections.generated_paper }}
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Powered by Gemini API</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    btn.classList.add('active');
+                    document.getElementById(`${btn.dataset.tab}-tab`).classList.add('active');
+                });
+            });
+
+            // Process Markdown content
+            const markdownContents = document.querySelectorAll('.markdown-content');
+            markdownContents.forEach(content => {
+                content.innerHTML = marked.parse(content.textContent);
+            });
+        });
+    </script>
+</body>
+</html>
