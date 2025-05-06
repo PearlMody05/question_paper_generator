@@ -1,56 +1,174 @@
-<main>
-    <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data">
-        <div class="form-section">
-            <div class="form-group">
-                <label for="previous_papers">Previous Year Papers (PDF/DOC/TXT) <span class="required">*</span></label>
-                <input type="file" id="previous_papers" name="previous_papers" multiple required accept=".pdf,.doc,.docx,.txt">
-                <small>You can select multiple files</small>
-            </div>
-
-            <div class="form-group">
-                <label for="syllabus">Syllabus (PDF/DOC/TXT) <span class="required">*</span></label>
-                <input type="file" id="syllabus" name="syllabus" required accept=".pdf,.doc,.docx,.txt">
-            </div>
-
-            <div class="form-group">
-                <label for="notes">Notes (Optional)</label>
-                <input type="file" id="notes" name="notes" accept=".pdf,.doc,.docx,.txt">
-            </div>
-
-            <div class="form-group">
-                <label for="course_outcomes">Course Outcomes (COs) <span class="required">*</span></label>
-                <textarea id="course_outcomes" name="course_outcomes" rows="5" required placeholder="Enter course outcomes (e.g., CO1: Understand core principles, CO2: Apply concepts to real-world problems...)"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="total_marks">Total Marks <span class="required">*</span></label>
-                <input type="number" id="total_marks" name="total_marks" min="1" max="1000" required placeholder="e.g., 100">
-            </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Question Paper Generator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="page-container">
+    <div class="background-decoration"></div>
+    <div class="container">
+      <header class="header">
+        <div class="logo-container">
+          <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </div>
+          <h1>Question Paper Generator</h1>
         </div>
+        <p>Generate comprehensive question papers based on previous papers, syllabus, and course outcomes</p>
+      </header>
 
-        <button type="submit" class="submit-btn">Generate Question Paper</button>
-    </form>
-</main>
+      <div class="flash-messages" id="flash-messages">
+        <!-- Flash messages will be inserted here dynamically -->
+      </div>
 
-<footer>
-    <p>Powered by Gemini API</p>
-</footer>
-</div>
+      <main>
+        <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data" id="generator-form">
+          <div class="form-section">
+            <div class="form-instructions">
+              <h3>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 16v-4"/>
+                  <path d="M12 8h.01"/>
+                </svg>
+                Instructions
+              </h3>
+              <ul>
+                <li>Upload previous year question papers to analyze patterns</li>
+                <li>The syllabus helps in aligning questions with the curriculum</li>
+                <li>Course outcomes ensure the generated paper meets learning objectives</li>
+              </ul>
+            </div>
 
-<script>
-// Add animation to flash messages
-document.addEventListener('DOMContentLoaded', function() {
-    const flashMessages = document.querySelectorAll('.flash-message');
-    flashMessages.forEach(message => {
-        // Add fade-out effect after 5 seconds
-        setTimeout(() => {
-            message.style.opacity = '0';
-            setTimeout(() => {
-                message.style.display = 'none';
-            }, 1000);
-        }, 5000);
-    });
-});
-</script>
+            <div class="form-group">
+              <div class="form-group-header">
+                <label for="previous_papers">Previous Year Papers <span class="required">*</span></label>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon lucide lucide-files">
+                  <path d="M15.5 2H8.6c-.4 0-.8.2-1.1.5-.3.3-.5.7-.5 1.1v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8c.4 0 .8-.2 1.1-.5.3-.3.5-.7.5-1.1V6.5L15.5 2z"/><path d="M3 7.6v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8"/><path d="M15 2v5h5"/>
+                </svg>
+              </div>
+              <div class="file-input-container">
+                <input type="file" id="previous_papers" name="previous_papers" multiple required accept=".pdf,.doc,.docx,.txt" class="file-input">
+                <div class="file-input-ui">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  <span>Drop files here or click to browse</span>
+                </div>
+              </div>
+              <div class="file-list" id="previous-papers-list"></div>
+              <small>You can select multiple files (PDF, DOC, DOCX, TXT)</small>
+            </div>
+
+            <div class="form-group">
+              <div class="form-group-header">
+                <label for="syllabus">Syllabus <span class="required">*</span></label>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon lucide lucide-file-text">
+                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <line x1="10" y1="9" x2="8" y2="9"/>
+                </svg>
+              </div>
+              <div class="file-input-container">
+                <input type="file" id="syllabus" name="syllabus" required accept=".pdf,.doc,.docx,.txt" class="file-input">
+                <div class="file-input-ui">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  <span>Drop file here or click to browse</span>
+                </div>
+              </div>
+              <div class="file-list" id="syllabus-list"></div>
+              <small>Upload course syllabus document</small>
+            </div>
+
+            <div class="form-group">
+              <div class="form-group-header">
+                <label for="notes">Notes (Optional)</label>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon lucide lucide-clipboard-list">
+                  <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                  <path d="M12 11h4"/>
+                  <path d="M12 16h4"/>
+                  <path d="M8 11h.01"/>
+                  <path d="M8 16h.01"/>
+                </svg>
+              </div>
+              <div class="file-input-container">
+                <input type="file" id="notes" name="notes" accept=".pdf,.doc,.docx,.txt" class="file-input">
+                <div class="file-input-ui">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  <span>Drop file here or click to browse</span>
+                </div>
+              </div>
+              <div class="file-list" id="notes-list"></div>
+              <small>Additional study materials or teaching notes</small>
+            </div>
+
+            <div class="form-group">
+              <div class="form-group-header">
+                <label for="course_outcomes">Course Outcomes (COs) <span class="required">*</span></label>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon lucide lucide-target">
+                  <circle cx="12" cy="12" r="10"/>
+                  <circle cx="12" cy="12" r="6"/>
+                  <circle cx="12" cy="12" r="2"/>
+                </svg>
+              </div>
+              <textarea id="course_outcomes" name="course_outcomes" rows="5" required placeholder="Enter course outcomes (e.g., CO1: Understand core principles, CO2: Apply concepts to real-world problems...)"></textarea>
+              <small>List the learning objectives students should achieve</small>
+            </div>
+
+            <div class="form-group">
+              <div class="form-group-header">
+                <label for="total_marks">Total Marks <span class="required">*</span></label>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon lucide lucide-percent">
+                  <line x1="19" x2="5" y1="5" y2="19"></line>
+                  <circle cx="6.5" cy="6.5" r="2.5"></circle>
+                  <circle cx="17.5" cy="17.5" r="2.5"></circle>
+                </svg>
+              </div>
+              <input type="number" id="total_marks" name="total_marks" min="1" max="1000" required placeholder="e.g., 100">
+              <small>Total marks for the question paper</small>
+            </div>
+          </div>
+
+          <div class="btn-container">
+            <button type="submit" class="submit-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-zap">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+              Generate Question Paper
+            </button>
+          </div>
+        </form>
+      </main>
+
+      <footer>
+        <p>&copy; <span id="current-year">2025</span> Question Paper Generator | Powered by Gemini API</p>
+      </footer>
+    </div>
+  </div>
+
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Generating your question paper...</p>
+  </div>
 </body>
 </html>
